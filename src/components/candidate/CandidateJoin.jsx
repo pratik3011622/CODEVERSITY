@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Check, Shield, ArrowRight, Camera, Mic, FileText } from 'lucide-react';
 import AuthService from '../../services/AuthService';
+import { useToast } from '../../context/ToastContext';
 
 const PermissionIcon = ({ icon: Icon, label, active, onClick }) => (
     <motion.button
@@ -20,6 +21,12 @@ const PermissionIcon = ({ icon: Icon, label, active, onClick }) => (
 );
 
 const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
+    let toast = null;
+    try {
+        toast = useToast();
+    } catch (e) {
+        // ToastProvider not available, skip toast notification
+    }
     const [permissions, setPermissions] = useState({ camera: false, mic: false, terms: false });
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -33,6 +40,7 @@ const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
         password: '',
         phone: '' // Added phone to state as it's in the form
     });
+    const [resumeFile, setResumeFile] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -51,6 +59,10 @@ const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
                 setUploadProgress(progress);
                 if (progress >= 100) {
                     clearInterval(interval);
+                    setUploadProgress(100);
+                    if (toast) {
+                        toast.success(`Resume "${file.name}" uploaded successfully!`);
+                    }
                 }
             }, 50);
         }

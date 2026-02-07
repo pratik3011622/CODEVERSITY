@@ -1,5 +1,6 @@
 import React from 'react';
 import Spline from '@splinetool/react-spline';
+import { Code2, Sparkles } from 'lucide-react';
 
 const Hero = () => {
     return (
@@ -11,6 +12,21 @@ const Hero = () => {
             
             {/* Content on the left */}
             <div className="relative z-20 min-h-screen flex flex-col justify-center px-8 lg:px-20 w-full lg:w-2/5">
+                {/* Hero Logo */}
+                <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                        <Code2 className="text-white" size={26} strokeWidth={2.5} />
+                    </div>
+                    <div className="flex items-baseline space-x-1">
+                        <span className="text-3xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent">
+                            DevScore
+                        </span>
+                        <span className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            .ai
+                        </span>
+                    </div>
+                </div>
+
                 <div className="space-y-8">
                     <div className="inline-block px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-4">
                         ✨ Revolutionizing Recruitment with AI

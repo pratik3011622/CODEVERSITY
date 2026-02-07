@@ -1,15 +1,25 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Twitter, Github, Code2 } from 'lucide-react';
 
 const Footer = ({ onNavigate }) => {
     return (
         <footer className="w-full bg-black border-t border-white/10 py-8">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
                 {/* Brand */}
                 <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-white">
-                        DevScoreAI
-                    </h3>
+                    <div className="flex items-center space-x-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/20">
+                            <Code2 className="text-white" size={22} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex items-baseline space-x-1">
+                            <span className="text-2xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent">
+                                DevScore
+                            </span>
+                            <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                                .ai
+                            </span>
+                        </div>
+                    </div>
                     <p className="text-gray-400 text-sm leading-relaxed">
                         Revolutionizing recruitment with AI-driven skill assessments. Find the right talent faster and smarter.
                     </p>
@@ -18,17 +28,6 @@ const Footer = ({ onNavigate }) => {
                         <a href="#" className="text-gray-400 hover:text-white transition-colors"><Twitter size={20} /></a>
                         <a href="#" className="text-gray-400 hover:text-white transition-colors"><Github size={20} /></a>
                     </div>
-                </div>
-
-                {/* Quick Links */}
-                <div>
-                    <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-                    <ul className="space-y-2 text-sm text-gray-400">
-                        <li><button className="hover:text-white transition-colors" onClick={() => onNavigate('landing')}>Home</button></li>
-                        <li><button className="hover:text-white transition-colors" onClick={() => onNavigate('about')}>About Us</button></li>
-                        <li><button className="hover:text-white transition-colors" onClick={() => onNavigate('candidate')}>Candidate Portal</button></li>
-                        <li><button className="hover:text-white transition-colors" onClick={() => onNavigate('recruiter')}>Recruiter Portal</button></li>
-                    </ul>
                 </div>
 
                 {/* Resources */}

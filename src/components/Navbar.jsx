@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Code2, TrendingUp, Sparkles } from 'lucide-react';
 
 const Navbar = ({ onLogin, onJoin, onNavigate }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,11 +17,28 @@ const Navbar = ({ onLogin, onJoin, onNavigate }) => {
         <nav
             className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/10"
         >
-            {/* Logo - shifted to leftmost */}
-            <div className="absolute left-0 pl-4 lg:pl-8 pt-2 lg:pt-3 cursor-pointer">
-                <span className="text-2xl font-bold text-white">
-                    DevScoreAI
-                </span>
+            {/* Logo - Professional Design */}
+            <div className="absolute left-0 pl-4 lg:pl-8 pt-2 lg:pt-3 cursor-pointer group" onClick={() => { onNavigate('landing'); }}>
+                <div className="flex items-center space-x-2">
+                    {/* Logo Icon */}
+                    <div className="relative">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all duration-300 group-hover:scale-110">
+                            <Code2 className="text-white" size={22} strokeWidth={2.5} />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                            <Sparkles className="text-white" size={10} />
+                        </div>
+                    </div>
+                    {/* Logo Text */}
+                    <div className="flex items-baseline space-x-1">
+                        <span className="text-2xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300">
+                            DevScore
+                        </span>
+                        <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            .ai
+                        </span>
+                    </div>
+                </div>
             </div>
 
             {/* Desktop Navigation */}
