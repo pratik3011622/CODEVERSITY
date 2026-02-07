@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onLogin, onJoin, onNavigate }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,84 +17,80 @@ const Navbar = ({ onLogin, onJoin, onNavigate }) => {
         <nav
             className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/10"
         >
-            <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <div className="flex-shrink-0 cursor-pointer">
-                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">
-                            DevScoreAI
-                        </span>
-                    </div>
+            {/* Logo - shifted to leftmost */}
+            <div className="absolute left-0 pl-4 lg:pl-8 pt-2 lg:pt-3 cursor-pointer">
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+                    DevScoreAI
+                </span>
+            </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('landing'); }}>Home</button>
-                        <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('about'); }}>About</button>
-                        <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('contact'); }}>Contact</button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center justify-center space-x-8 h-20">
+                <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('landing'); }}>Home</button>
+                <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('about'); }}>About</button>
+                <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('contact'); }}>Contact</button>
 
-                        {/* Candidate Dropdown */}
-                        <div className="relative">
+                {/* Candidate Dropdown */}
+                <div className="relative">
+                    <button
+                        onClick={() => toggleDropdown('candidate')}
+                        className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                    >
+                        <span>Candidate</span>
+                    </button>
+                    {activeDropdown === 'candidate' && (
+                        <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
                             <button
-                                onClick={() => toggleDropdown('candidate')}
-                                className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                                onClick={() => { onLogin('candidate'); setActiveDropdown(null); }}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
                             >
-                                <span>Candidate</span>
+                                Login
                             </button>
-                            {activeDropdown === 'candidate' && (
-                                <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
-                                    <button
-                                        onClick={() => { onLogin('candidate'); setActiveDropdown(null); }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
-                                    >
-                                        Login
-                                    </button>
-                                    <button
-                                        onClick={() => { onJoin('candidate'); setActiveDropdown(null); }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
-                                    >
-                                        Join
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Recruiter Dropdown */}
-                        <div className="relative">
                             <button
-                                onClick={() => toggleDropdown('recruiter')}
-                                className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                                onClick={() => { onJoin('candidate'); setActiveDropdown(null); }}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
                             >
-                                <span>Recruiter</span>
+                                Join
                             </button>
-                            {activeDropdown === 'recruiter' && (
-                                <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
-                                    <button
-                                        onClick={() => { onLogin('recruiter'); setActiveDropdown(null); }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
-                                    >
-                                        Login
-                                    </button>
-                                    <button
-                                        onClick={() => { onJoin('recruiter'); setActiveDropdown(null); }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
-                                    >
-                                        Join
-                                    </button>
-                                </div>
-                            )}
                         </div>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden">
-                        <button
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="text-gray-300 hover:text-white p-2"
-                        >
-                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
+                    )}
                 </div>
+
+                {/* Recruiter Dropdown */}
+                <div className="relative">
+                    <button
+                        onClick={() => toggleDropdown('recruiter')}
+                        className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                    >
+                        <span>Recruiter</span>
+                    </button>
+                    {activeDropdown === 'recruiter' && (
+                        <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
+                            <button
+                                onClick={() => { onLogin('recruiter'); setActiveDropdown(null); }}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
+                            >
+                                Login
+                            </button>
+                            <button
+                                onClick={() => { onJoin('recruiter'); setActiveDropdown(null); }}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
+                            >
+                                Join
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center ml-auto pr-4">
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="text-gray-300 hover:text-white p-2"
+                >
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
             </div>
 
             {/* Mobile Menu */}

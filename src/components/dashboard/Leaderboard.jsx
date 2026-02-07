@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { X, Award, ChevronRight, Brain, ShieldAlert, FileCheck, Clock, Play } from 'lucide-react';
-import { proctorService } from '../../services/ProctorService';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 
 const candidates = [
     { id: 1, name: "Arjun Reddy", role: "Sr. ML Engineer", score: 98, skills: { coding: 90, system: 85, ml: 95, comm: 80, problem: 92 } },
@@ -11,67 +9,7 @@ const candidates = [
     { id: 4, name: "Priya Sharma", role: "AI Product Manager", score: 85, skills: { coding: 60, system: 80, ml: 70, comm: 98, problem: 85 } },
 ];
 
-const IntegrityPanel = ({ candidate }) => {
-    const [activeTab, setActiveTab] = useState('snapshots');
-    const snapshots = proctorService.getSnapshots();
-    const events = proctorService.getReplay();
-
-    return (
-        <div className="space-y-4">
-            <div className="flex border-b border-white/10">
-                <button
-                    onClick={() => setActiveTab('snapshots')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${activeTab === 'snapshots' ? 'text-white border-b-2 border-red-500' : 'text-gray-500 hover:text-white'}`}
-                >
-                    Snapshots
-                </button>
-                <button
-                    onClick={() => setActiveTab('replay')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${activeTab === 'replay' ? 'text-white border-b-2 border-red-500' : 'text-gray-500 hover:text-white'}`}
-                >
-                    Replay
-                </button>
-            </div>
-
-            {activeTab === 'snapshots' && (
-                <div className="grid grid-cols-2 gap-2">
-                    {snapshots.length === 0 ? (
-                        <p className="text-gray-500 text-sm col-span-2">No snapshots recorded.</p>
-                    ) : (
-                        snapshots.slice(0, 4).map((snap) => (
-                            <div key={snap.id} className="bg-white/5 rounded-lg overflow-hidden border border-white/10">
-                                <img src={snap.image} alt="Snapshot" className="w-full h-20 object-cover opacity-60" />
-                                <div className="p-2">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-400">+{snap.timeOffset}s</span>
-                                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${snap.reason.includes('Suspect') ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'}`}>
-                                            {snap.reason}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            )}
-
-            {activeTab === 'replay' && (
-                <div className="bg-[#1e1e1e] rounded-lg p-3 border border-white/10">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Play size={14} className="text-green-400" />
-                        <span className="text-sm text-white">Session Replay</span>
-                    </div>
-                    <p className="text-xs text-gray-500">{events.length > 0 ? `${events.length} events recorded` : 'No recording data available'}</p>
-                </div>
-            )}
-        </div>
-    );
-};
-
-const Leaderboard = () => {
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
-    const [activePanelTab, setActivePanelTab] = useState('explainable-ai');
-
+const Leaderboard = ({ onSelectCandidate }) => {
     return (
         <div className="space-y-6 relative">
             <h2 className="text-2xl font-bold text-white mb-6">Global Leaderboard</h2>
@@ -126,10 +64,7 @@ const Leaderboard = () => {
                                 </td>
                                 <td className="p-4">
                                     <button
-                                        onClick={() => {
-                                            setSelectedCandidate(candidate);
-                                            setActivePanelTab('explainable-ai');
-                                        }}
+                                        onClick={() => onSelectCandidate(candidate)}
                                         className="text-white hover:text-purple-400 p-2 rounded-full hover:bg-white/10 transition-colors"
                                     >
                                         <ChevronRight size={20} />
@@ -140,99 +75,6 @@ const Leaderboard = () => {
                     </tbody>
                 </table>
             </div>
-
-            {/* Side Panel with Tabs */}
-            <AnimatePresence>
-                {selectedCandidate && (
-                    <motion.div
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 100 }}
-                        className="fixed right-0 top-0 h-screen w-96 bg-[#0a0a0a] border-l border-white/10 shadow-2xl z-[70] flex flex-col"
-                    >
-                        <button onClick={() => setSelectedCandidate(null)} className="absolute top-4 right-4 text-gray-400 hover:text-white p-2">
-                            <X size={24} />
-                        </button>
-
-                        {/* Panel Tabs */}
-                        <div className="flex border-b border-white/10 mt-14">
-                            <button
-                                onClick={() => setActivePanelTab('explainable-ai')}
-                                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activePanelTab === 'explainable-ai' ? 'bg-white/10 text-white border-b-2 border-purple-500' : 'text-gray-500 hover:text-white'}`}
-                            >
-                                <Brain size={16} />
-                                Explainable AI
-                            </button>
-                            <button
-                                onClick={() => setActivePanelTab('integrity')}
-                                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activePanelTab === 'integrity' ? 'bg-white/10 text-white border-b-2 border-red-500' : 'text-gray-500 hover:text-white'}`}
-                            >
-                                <ShieldAlert size={16} />
-                                Integrity
-                            </button>
-                        </div>
-
-                        {/* Panel Content */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {activePanelTab === 'explainable-ai' && (
-                                <div className="space-y-6">
-                                    <div className="text-center">
-                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 mx-auto flex items-center justify-center text-3xl font-bold text-white mb-4">
-                                            {selectedCandidate.name.charAt(0)}
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-white">{selectedCandidate.name}</h3>
-                                        <p className="text-gray-400">{selectedCandidate.role}</p>
-                                    </div>
-
-                                    <div className="bg-white/5 rounded-xl p-4 border border-white/10 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 bg-green-500 text-black text-xs font-bold px-2 py-1 rounded-bl-lg">
-                                            AI Recommended
-                                        </div>
-                                        <h4 className="text-sm font-semibold text-gray-300 mb-2 flex items-center">
-                                            <Award size={16} className="mr-2 text-yellow-400" />
-                                            Match Analysis
-                                        </h4>
-                                        <p className="text-sm text-gray-400 leading-relaxed">
-                                            {selectedCandidate.name} shows exceptional proficiency in ML algorithms and System Design, perfectly aligning with the senior requirements. Strong communicator.
-                                        </p>
-                                    </div>
-
-                                    <div className="h-64 w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
-                                                { subject: 'Coding', A: selectedCandidate.skills.coding, fullMark: 100 },
-                                                { subject: 'System Design', A: selectedCandidate.skills.system, fullMark: 100 },
-                                                { subject: 'ML Ops', A: selectedCandidate.skills.ml, fullMark: 100 },
-                                                { subject: 'Communication', A: selectedCandidate.skills.comm, fullMark: 100 },
-                                                { subject: 'Problem Solving', A: selectedCandidate.skills.problem, fullMark: 100 },
-                                            ]}>
-                                                <PolarGrid stroke="#374151" />
-                                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                                                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                                                <Radar name="Skills" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.4} />
-                                            </RadarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activePanelTab === 'integrity' && (
-                                <div className="space-y-4">
-                                    <div className="text-center">
-                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-orange-500 mx-auto flex items-center justify-center text-3xl font-bold text-white mb-4">
-                                            {selectedCandidate.name.charAt(0)}
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white">{selectedCandidate.name}</h3>
-                                        <p className="text-gray-400">Integrity Report</p>
-                                    </div>
-
-                                    <IntegrityPanel candidate={selectedCandidate} />
-                                </div>
-                            )}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 };

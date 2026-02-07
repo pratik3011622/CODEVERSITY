@@ -1,13 +1,6 @@
 import React from 'react';
 
-// NOTE: The Spline component was causing runtime "end of buffer" errors due to an invalid or incompatible scene URL.
-// We have replaced it with a CSS-only 3D simulation for stability.
-// To use Spline, uncomment the following and ensure you have a valid .splinecode URL.
-
-/*
-import Spline from '@splinetool/react-spline';
-*/
-
+// CSS-only 3D simulation for dashboard (no Spline)
 const SplineBackground = () => {
     return (
         <div className="fixed inset-0 z-0 opacity-40 pointer-events-none overflow-hidden bg-[#030303]">
@@ -21,10 +14,6 @@ const SplineBackground = () => {
 
             {/* Subtle Grid Overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)]"></div>
-
-            {/* 
-            <Spline scene="https://prod.spline.design/YOUR_VALID_SCENE_URL/scene.splinecode" />
-            */}
 
             <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
         </div>

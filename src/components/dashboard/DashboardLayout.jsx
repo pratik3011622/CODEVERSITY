@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import SplineBackground from './SplineBackground';
 import DashboardOverview from './DashboardOverview';
 import CreateAssignmentModal from './CreateAssignmentModal';
 import Leaderboard from './Leaderboard';
-import IntegrityReport from './IntegrityReport';
+import CandidateProfile from './CandidateProfile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Menu, X, LayoutDashboard, Award, FileCheck, LogOut } from 'lucide-react';
 
 const DashboardLayout = ({ onLogout }) => {
-    const [view, setView] = useState('dashboard'); // 'dashboard', 'create', 'results', 'integrity'
+    const [view, setView] = useState('dashboard'); // 'dashboard', 'create', 'results', 'profile'
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const menuRef = useRef(null);
 
     // Handle browser back/forward navigation
     useEffect(() => {
@@ -35,10 +35,12 @@ const DashboardLayout = ({ onLogout }) => {
     // Close menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
+            const menuElement = document.getElementById('recruiter-menu');
+            if (menuElement && !menuElement.contains(e.target)) {
                 setIsMenuOpen(false);
             }
         };
+
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
@@ -52,6 +54,7 @@ const DashboardLayout = ({ onLogout }) => {
     const handleMenuClick = (menuId) => {
         setView(menuId);
         setIsMenuOpen(false);
+        setSelectedCandidate(null);
     };
 
     const renderContent = () => {
@@ -71,16 +74,16 @@ const DashboardLayout = ({ onLogout }) => {
                     </div>
                 );
             case 'results':
-                return <Leaderboard />;
-            case 'integrity':
-                return <IntegrityReport onClose={() => setView('dashboard')} />;
+                return <Leaderboard onSelectCandidate={(candidate) => { setSelectedCandidate(candidate); setView('profile'); }} />;
+            case 'profile':
+                return selectedCandidate ? <CandidateProfile candidate={selectedCandidate} onBack={() => setView('results')} /> : <Leaderboard onSelectCandidate={(candidate) => { setSelectedCandidate(candidate); setView('profile'); }} />;
             default:
                 return <DashboardOverview />;
         }
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#030003] text-white relative overflow-hidden font-sans">
+        <div className="relative min-h-screen bg-[#030003] text-white font-sans">
             <SplineBackground />
 
             {/* AI Core Floating Element - Top Right */}
@@ -95,8 +98,8 @@ const DashboardLayout = ({ onLogout }) => {
                 </div>
             </div>
 
-            {/* Header with Hamburger Menu */}
-            <div className="fixed top-24 left-4 z-[100] flex items-center space-x-4" ref={menuRef}>
+            {/* Header with Hamburger Menu - Fixed outside flex container */}
+            <div id="recruiter-menu" className="fixed top-24 left-4 z-[100] flex items-center space-x-4">
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="p-3 rounded-xl bg-black/60 backdrop-blur-xl border border-white/20 hover:bg-white/20 transition-colors shadow-lg"
@@ -114,7 +117,7 @@ const DashboardLayout = ({ onLogout }) => {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-16 left-0 w-64 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
+                            className="absolute top-full left-0 mt-2 w-56 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
                         >
                             <div className="p-2">
                                 {menuItems.map((item) => {
@@ -151,7 +154,7 @@ const DashboardLayout = ({ onLogout }) => {
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
-                <main className="flex-1 pt-36 px-8 relative z-10 overflow-y-auto custom-scrollbar pb-24 ml-0">
+                <main className="flex-1 pt-36 px-8 relative z-10 pb-24">
                     <AnimatePresence mode='wait'>
                         <motion.div
                             key={view}
@@ -160,13 +163,13 @@ const DashboardLayout = ({ onLogout }) => {
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.3 }}
                         >
-                            {view === 'integrity' ? <IntegrityReport onClose={() => setView('dashboard')} /> : renderContent()}
+                            {renderContent()}
                         </motion.div>
                     </AnimatePresence>
                 </main>
 
-                {/* Footer - Fixed at bottom of main content */}
-                <footer className="bg-[#030003] border-t border-white/10 py-4 z-20">
+                {/* Footer */}
+                <footer className="bg-[#030003] border-t border-white/10 py-4 z-20 hidden">
                     <div className="flex justify-between items-center px-4 text-sm text-gray-500">
                         <p>© {new Date().getFullYear()} DevScoreAI. All rights reserved.</p>
                         <div className="flex space-x-6">
