@@ -31,15 +31,18 @@ const Navbar = ({ onLogin, onJoin, onNavigate }) => {
                 <button className="text-gray-300 hover:text-white text-sm font-medium" onClick={() => { onNavigate('contact'); }}>Contact</button>
 
                 {/* Candidate Dropdown */}
-                <div className="relative">
+                <div
+                    className="relative group"
+                    onMouseEnter={() => setActiveDropdown('candidate')}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                >
                     <button
-                        onClick={() => toggleDropdown('candidate')}
-                        className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                        className="text-gray-300 group-hover:text-white text-sm font-medium flex items-center space-x-1 py-4"
                     >
                         <span>Candidate</span>
                     </button>
                     {activeDropdown === 'candidate' && (
-                        <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
+                        <div className="absolute top-full left-0 mt-0 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden py-1">
                             <button
                                 onClick={() => { onLogin('candidate'); setActiveDropdown(null); }}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"
@@ -57,15 +60,18 @@ const Navbar = ({ onLogin, onJoin, onNavigate }) => {
                 </div>
 
                 {/* Recruiter Dropdown */}
-                <div className="relative">
+                <div
+                    className="relative group"
+                    onMouseEnter={() => setActiveDropdown('recruiter')}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                >
                     <button
-                        onClick={() => toggleDropdown('recruiter')}
-                        className="text-gray-300 hover:text-white text-sm font-medium flex items-center space-x-1"
+                        className="text-gray-300 group-hover:text-white text-sm font-medium flex items-center space-x-1 py-4"
                     >
                         <span>Recruiter</span>
                     </button>
                     {activeDropdown === 'recruiter' && (
-                        <div className="absolute top-full left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden">
+                        <div className="absolute top-full left-0 mt-0 w-40 bg-black border border-white/10 rounded-lg shadow-xl overflow-hidden py-1">
                             <button
                                 onClick={() => { onLogin('recruiter'); setActiveDropdown(null); }}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white"

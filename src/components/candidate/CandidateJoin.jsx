@@ -39,6 +39,23 @@ const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setResumeFile(file);
+            setIsUploading(true);
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                setUploadProgress(progress);
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }
+    };
+
     const togglePermission = (key) => {
         setPermissions(prev => ({ ...prev, [key]: !prev[key] }));
     };
@@ -143,23 +160,61 @@ const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
 
                         {/* CV Upload */}
                         <div
-                            onClick={handleUpload}
-                            className={`relative h-20 rounded-xl border-2 border-dashed transition-all cursor-pointer overflow-hidden flex items-center justify-center
-                            ${isUploading ? 'border-purple-500/50 bg-purple-500/5' : 'border-gray-700 hover:border-gray-500 hover:bg-white/5'}`}
+                            className={`relative h-20 rounded-xl border-2 transition-all cursor-pointer overflow-hidden flex items-center justify-center group
+                            ${uploadProgress === 100
+                                    ? 'border-green-500 bg-green-500/20 shadow-[0_0_20px_-5px_#22c55e]'
+                                    : isUploading
+                                        ? 'border-purple-500/50 bg-purple-500/5 border-dashed'
+                                        : 'border-gray-700 hover:border-gray-500 hover:bg-white/5 border-dashed'}`}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 transform -translate-x-full transition-transform duration-300" style={{ transform: `translateX(${uploadProgress - 100}%)` }}></div>
-                            <div className="relative z-10 flex items-center">
+                            <input
+                                type="file"
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50"
+                                accept=".pdf,.doc,.docx"
+                                onChange={handleFileChange}
+                                disabled={isUploading}
+                            />
+
+                            {/* Progress Bar */}
+                            <div
+                                className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 transform -translate-x-full transition-transform duration-300 pointer-events-none"
+                                style={{ transform: `translateX(${uploadProgress - 100}%)` }}
+                            ></div>
+
+                            <div className="relative z-10 flex items-center pointer-events-none px-4 w-full justify-center">
                                 {uploadProgress === 100 ? (
-                                    <div className="flex items-center text-green-400 font-medium">
-                                        <Check size={18} className="mr-2" /> Resume Uploaded
-                                    </div>
+                                    <motion.div
+                                        initial={{ scale: 0.5, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        className="flex items-center text-green-400 font-medium space-x-2"
+                                    >
+                                        <div className="bg-green-500/20 p-1.5 rounded-full">
+                                            <Check size={18} strokeWidth={3} />
+                                        </div>
+                                        <div className="flex flex-col text-left">
+                                            <span className="text-xs text-green-300 uppercase tracking-wider font-bold">Upload Complete</span>
+                                            {resumeFile && (
+                                                <span className="text-white text-sm truncate max-w-[200px]">{resumeFile.name}</span>
+                                            )}
+                                        </div>
+                                    </motion.div>
                                 ) : (
-                                    <>
-                                        <Upload size={20} className={`mr-2 ${isUploading ? 'text-purple-400' : 'text-gray-400'}`} />
-                                        <span className="text-gray-400 text-sm">
-                                            {isUploading ? `Uploading... ${uploadProgress}%` : 'Upload CV/Resume *'}
-                                        </span>
-                                    </>
+                                    <div className="flex flex-col items-center">
+                                        {isUploading ? (
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                                                <span className="text-purple-300 text-sm font-medium">Uploading... {uploadProgress}%</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center group-hover:scale-105 transition-transform">
+                                                <div className="flex items-center space-x-2 text-gray-400 group-hover:text-white transition-colors">
+                                                    <Upload size={24} />
+                                                    <span className="font-medium">Upload CV/Resume</span>
+                                                </div>
+                                                <span className="text-xs text-gray-500 mt-1">PDF, DOC, DOCX (Max 5MB)</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -253,8 +308,8 @@ const CandidateJoin = ({ onJoin, onSwitchToLogin }) => {
                         * CV/Resume upload is compulsory
                     </div>
                 </div>
-            </motion.div>
-        </div>
+            </motion.div >
+        </div >
     );
 };
 
